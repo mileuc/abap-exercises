@@ -1,82 +1,78 @@
 CLASS zcl_itab_basics DEFINITION                " Define a new class called zcl_itab_basics
-  PUBLIC                                        " Class visibility is public
-  FINAL                                         " Class cannot be inherited
+  PUBLIC                                        " The class is public and can be accessed from outside
+  FINAL                                         " The class is final and cannot be inherited
   CREATE PUBLIC .                               " Allow public creation of class instances
 
-  PUBLIC SECTION.                               " Public section of the class
+
+  PUBLIC SECTION.                               " Start of the public section of the class
     TYPES group TYPE c LENGTH 1.                " Define a type 'group' as a character of length 1
-    TYPES: BEGIN OF initial_type,               " Begin the definition of a structured type 'initial_type'
+    TYPES: BEGIN OF initial_type,               " Begin the definition of a structured type 'initial_type' with three fields: group, number, and description
              group       TYPE group,            " Define a field 'group' of type 'group' within the structure
              number      TYPE i,                " Define a field 'number' of type integer within the structure
              description TYPE string,           " Define a field 'description' of type string within the structure
            END OF initial_type,                 " End the definition of the structured type 'initial_type'
-           itab_data_type TYPE STANDARD TABLE OF initial_type WITH EMPTY KEY. " Define a table type 'itab_data_type' as a standard table of 'initial_type' with an empty key
+           itab_data_type TYPE STANDARD TABLE OF initial_type WITH EMPTY KEY. " Definition of an internal table type 'itab_data_type' with rows of type 'initial_type' and no primary key
 
-    METHODS fill_itab                           " Define a method 'fill_itab' that returns an internal table
+    METHODS fill_itab                           " Declaration of a method fill_itab to fill the internal table with initial data
            RETURNING
-             VALUE(initial_data) TYPE itab_data_type. " Return value of type 'itab_data_type'
+             VALUE(initial_data) TYPE itab_data_type. " Returns a table of type 'itab_data_type'
 
-    METHODS add_to_itab                         " Define a method 'add_to_itab' that adds a record to an internal table
+    METHODS add_to_itab                         " Declaration of a method add_to_itab to add a record to the internal table
            IMPORTING initial_data TYPE itab_data_type  " Import parameter 'initial_data' of type 'itab_data_type'
            RETURNING
-            VALUE(updated_data) TYPE itab_data_type.   " Return value 'updated_data' of type 'itab_data_type'
+            VALUE(updated_data) TYPE itab_data_type.   " Returns an updated table of type 'itab_data_type'
 
-    METHODS sort_itab                           " Define a method 'sort_itab' that sorts the internal table
+    METHODS sort_itab                           " Declaration of a method sort_itab to sort the internal table
            IMPORTING initial_data TYPE itab_data_type  " Import parameter 'initial_data' of type 'itab_data_type'
            RETURNING
-            VALUE(updated_data) TYPE itab_data_type.   " Return value 'updated_data' of type 'itab_data_type'
+            VALUE(updated_data) TYPE itab_data_type.   " Returns a sorted table of type 'itab_data_type'
 
-    METHODS search_itab                         " Define a method 'search_itab' to search for a value in the internal table
+    METHODS search_itab                         " Declaration of a method search_itab to search for a specific value in the internal table
            IMPORTING initial_data TYPE itab_data_type  " Import parameter 'initial_data' of type 'itab_data_type'
            RETURNING
-             VALUE(result_index) TYPE i.              " Return value 'result_index' of type integer
+             VALUE(result_index) TYPE i.              " Returns an integer representing the index
 
-  PROTECTED SECTION.                           " Protected section (currently empty)
-  PRIVATE SECTION.                             " Private section (currently empty)
-ENDCLASS.                                       " End of class definition
+  PROTECTED SECTION.                           " Protected section (not used here)
+  PRIVATE SECTION.                             " Private section (not used here)
+ENDCLASS.                                      " End of the class definition
 
-CLASS zcl_itab_basics IMPLEMENTATION.           " Start of the class implementation
 
-  METHOD fill_itab.                             " Start method 'fill_itab'
-    " Create temporary internal table lt_data
-    DATA: lt_data TYPE itab_data_type.          " Define a local internal table 'lt_data' of type 'itab_data_type'
+" Implementation of the class methods
+CLASS zcl_itab_basics IMPLEMENTATION.
+  " Implementation of the method fill_itab to populate the internal table with initial data
+  METHOD fill_itab.
+    " Using the VALUE expression to fill the internal table 'initial_data' with 6 records
+    initial_data = VALUE #( 
+        ( group = 'A'	number = 10	description = 'Group A-2' ) " Record 1: Group 'A', Number 10, Description 'Group A-2'
+        ( group = 'B'	number = 5	description = 'Group B'   ) " Record 2: Group 'B', Number 5, Description 'Group B'
+        ( group = 'A'	number = 6	description = 'Group A-1' ) " Record 3: Group 'A', Number 6, Description 'Group A-1'
+        ( group = 'C'	number = 22	description = 'Group C-1' ) " Record 4: Group 'C', Number 22, Description 'Group C-1'
+        ( group = 'A'	number = 13	description = 'Group A-3' ) " Record 5: Group 'A', Number 13, Description 'Group A-3'
+        ( group = 'C'	number = 500 description = 'Group C-2' ) ). " Record 6: Group 'C', Number 500, Description 'Group C-2'
+  ENDMETHOD. " End of method fill_itab
 
-    " Populate internal table with the given records
-    APPEND VALUE #( group = 'A' number = 10 description = 'Group A-2') TO lt_data. " Add a record to lt_data
-    APPEND VALUE #( group = 'B' number = 5 description = 'Group B') TO lt_data.    " Add a record to lt_data
-    APPEND VALUE #( group = 'A' number = 6 description = 'Group A-1') TO lt_data.  " Add a record to lt_data
-    APPEND VALUE #( group = 'C' number = 22 description = 'Group C-1') TO lt_data. " Add a record to lt_data
-    APPEND VALUE #( group = 'A' number = 13 description = 'Group A-3') TO lt_data. " Add a record to lt_data
-    APPEND VALUE #( group = 'C' number = 500 description = 'Group C-2') TO lt_data. " Add a record to lt_data
+  " Implementation of the method add_to_itab to add a new record to the internal table
+  METHOD add_to_itab.
+    " Copy the input table 'initial_data' to 'updated_data'
+    updated_data = initial_data.
+    " Append a new record to the internal table 'updated_data'
+    APPEND VALUE #( group = 'A'	number = 19 description = 'Group A-4' ) TO updated_data.
+  ENDMETHOD.  " End of method add_to_itab
 
-    " Assign lt_data to internal table initial_data
-    initial_data = lt_data.                     " Assign the populated 'lt_data' to the output parameter 'initial_data'
-  ENDMETHOD.                                    " End method 'fill_itab'
+  " Implementation of the method sort_itab to sort the internal table
+  METHOD sort_itab.
+    " Copy the input table 'initial_data' to 'updated_data'
+    updated_data = initial_data.  
+    " Sort the internal table 'updated_data' by 'group' in ascending order and 'number' in descending order
+    SORT updated_data BY group ASCENDING number DESCENDING.
+  ENDMETHOD.  " End of method sort_itab
 
-  METHOD add_to_itab.                           " Start method 'add_to_itab'
-    updated_data = initial_data.                " Initialize 'updated_data' with the contents of 'initial_data'
-    
-    " Add new record to the table
-    APPEND VALUE #( group = 'A' number = 19 description = 'Group A-4' ) TO updated_data. " Add a new record to 'updated_data'
-  ENDMETHOD.                                    " End method 'add_to_itab'
+  " Implementation of the method search_itab to find the index of a specific record
+  METHOD search_itab.
+    " Create a temporary copy of the internal table 'initial_data'
+    DATA(temp_data) = initial_data.
+    " Find the index of the first record in 'temp_data' where 'number' equals 6
+    result_index = line_index( temp_data[ number = 6 ] ).
+  ENDMETHOD.  " End of method search_itab
 
-  METHOD sort_itab.                             " Start method 'sort_itab'
-    " Sort the internal table first by GROUP in alphabetical order and then by NUMBER in descending order
-    SORT initial_data BY group ASCENDING number DESCENDING. " Sort 'initial_data' by 'group' ascending and 'number' descending
-    updated_data = initial_data.                " Assign the sorted 'initial_data' to 'updated_data'
-  ENDMETHOD.                                    " End method 'sort_itab'
-
-  METHOD search_itab.                           " Start method 'search_itab'
-    " lv_index is Local Variable for Index to keep track of the current position in an internal table
-    DATA: lv_index TYPE i VALUE 0.              " Define local variable 'lv_index' of type integer initialized to 0
-
-    " Find index of the record where the NUMBER column has a value of 6
-    LOOP AT initial_data INTO DATA(current_row) WHERE number = 6.  " Loop through 'initial_data' to find a record with 'number' = 6
-      lv_index = sy-tabix.                      " Assign the current index to 'lv_index'
-      EXIT.                                     " Exit the loop after finding the record
-    ENDLOOP.                                    " End of loop
-
-    result_index = lv_index.                    " Assign 'lv_index' to 'result_index' to return the found index
-  ENDMETHOD.                                    " End method 'search_itab'
-
-ENDCLASS.                                       " End of class implementation
+ENDCLASS.  " End of the class implementation
