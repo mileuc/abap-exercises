@@ -28,3 +28,22 @@ CLASS zcl_leap IMPLEMENTATION.
   ENDMETHOD. " End of the method implementation.
 
 ENDCLASS. " End of the class definition.
+
+"IF year MOD 4 = 0:
+
+    "This checks if the year is divisible by 4. If the result is 0, the year is divisible by 4 and might be a leap year. 
+    "If this condition fails, the year is not a leap year.
+
+"IF year MOD 100 = 0:
+
+    "If the year is divisible by 4, this checks if it is also divisible by 100.
+    "If true, it could be a leap year only if it satisfies the next condition.
+
+"IF year MOD 400 = 0:
+
+    "If the year is divisible by 100, this checks if it is also divisible by 400.
+    "If true, the year is a leap year. If false, the year is not a leap year.
+
+" result = abap_true or result = abap_false:
+
+    " These lines set the result variable to either true or false based on the conditions checked.
