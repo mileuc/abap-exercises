@@ -28,12 +28,12 @@ CLASS zcl_clock IMPLEMENTATION. " Begin implementation of the class zcl_clock
 
   METHOD add.
   "Adds a specified number of minutes to the clock."
-    clock = clock + (minutes * 60). " Add the number of minutes (converted to seconds) to the clock
+    clock = clock + ( minutes * 60 ). " Add the number of minutes (converted to seconds) to the clock
   ENDMETHOD.
 
   METHOD constructor.
     " Clock is number of seconds
-    clock = (hours * 60 * 60) + (minutes * 60). " Initialize the clock with hours and minutes converted to seconds
+    clock = ( hours * 60 * 60 ) + ( minutes * 60 ). " Initialize the clock with hours and minutes converted to seconds
   ENDMETHOD.
 
   METHOD get.
@@ -51,7 +51,7 @@ CLASS zcl_clock IMPLEMENTATION. " Begin implementation of the class zcl_clock
 
   METHOD sub.
   "Subtracts a specified number of minutes from the clock.
-    clock = clock - (minutes * 60_. " Subtract the number of minutes (converted to seconds) from the clock
+    clock = clock - ( minutes * 60 ). " Subtract the number of minutes (converted to seconds) from the clock
   ENDMETHOD.
 
 ENDCLASS. "End of class implementation
