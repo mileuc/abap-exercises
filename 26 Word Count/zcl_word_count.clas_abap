@@ -1,0 +1,51 @@
+CLASS zcl_word_count DEFINITION "Start of the class definition for zcl_word_count
+  PUBLIC "The class is publicly accessible
+  FINAL  "The class cannot be inherited
+  CREATE PUBLIC . "Allows public creation of instances
+
+  PUBLIC SECTION. " Public section of the class where types and methods are declared
+    TYPES:
+      BEGIN OF return_structure,         " Define a structure for storing word count data
+        word  TYPE string,                " The word itself
+        count TYPE i,                     " The count of occurrences of the word
+      END OF return_structure,
+      return_table TYPE STANDARD TABLE OF return_structure WITH KEY word. " Define a table type for storing multiple word count structures, keyed by word
+
+    METHODS count_words
+    " Method for counting the occurrences of each word in the provided phrase.
+      IMPORTING
+        !phrase       TYPE string        " Input phrase to be analyzed
+      RETURNING
+        VALUE(result) TYPE return_table. " Return a table of word counts
+  PROTECTED SECTION. " Protected section of the class (not used here)
+  PRIVATE SECTION.   " Private section of the class (not used here)
+ENDCLASS.            " End of class definition
+
+" Begin implementation of the class zcl_word_count
+CLASS zcl_word_count IMPLEMENTATION.
+
+  METHOD count_words.
+    " Method for counting the occurrences of each word in the provided phrase.
+
+    phrase = to_lower( phrase ). " Convert the entire phrase to lowercase for case-insensitive comparison
+    phrase = replace( val = phrase sub = '\n' with = | | occ = 0 ). " Replace newline characters with spaces
+    phrase = replace( val = phrase sub = '\t' with = | | occ = 0 ). " Replace tab characters with spaces
+    phrase = replace( val = phrase sub = ',' with = | | occ = 0 ). " Replace commas with spaces
+    phrase  = replace( val = phrase regex = '[^a-z0-9 ]' with = '' occ = 0 ). " Remove any characters that are not letters, numbers, or spaces using regex
+
+    SPLIT phrase AT ' ' INTO TABLE DATA(words). " Split the cleaned phrase into individual words and store them in the internal table 'words'
+    LOOP AT words ASSIGNING FIELD-SYMBOL(<word>). " Loop through each word in the 'words' table
+      CHECK <word> IS NOT INITIAL. " Skip processing if the word is empty (e.g., multiple spaces result in empty words)
+      READ TABLE result ASSIGNING FIELD-SYMBOL(<res>) WITH KEY word = <word>. " Check if the current word already exists in the 'result' table
+      " This line reads the internal table result to check if it already contains an entry for the current word (<word>)
+    " ASSIGNING FIELD-SYMBOL(<res>) dynamically assigns a field symbol <res> to point to the row in the result table if the word is found.
+    "If the word is found in the result table, the system variable sy-subrc is set to 0. If not, sy-subrc is set to a non-zero value.
+      IF sy-subrc EQ 0. " If the word is found in the 'result' table
+        <res>-count += 1. " Increment the count for this word
+      ELSE. " If the word is not found in the 'result' table
+       APPEND VALUE #( word = <word> count = 1 ) TO result. " Add the new word with an initial count of 1 to the 'result' table
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+ENDCLASS.
