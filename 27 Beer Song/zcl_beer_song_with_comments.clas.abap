@@ -61,5 +61,22 @@ ENDCLASS. " End of class implementation
         " when ( initial_bottles_count - i - 1 ) eq 1: If 1 bottle is left after taking one down, return "Take one down and pass it around, 1 bottle of beer on the wall."
         " else: For all other cases, return the line formatted with the remaining bottles count ({ initial_bottles_count - i - 1 }).
 
+" cond is a built-in ABAP construct used to create conditional expressions. It allows you to define a value based on multiple conditions, similar to an IF...ELSE statement, but in a single, compact form. The cond construct is particularly useful for dynamically setting a value based on multiple possible cases without needing to write out multiple lines of conditional logic.
+
+" Syntax of cond
+" The syntax for the cond expression is as follows:
+
+
+"cond #( 
+"  when <condition1> then <result1>
+"  when <condition2> then <result2>
+"  ...
+"  else <default_result> 
+")
+
+"    cond #(...): The # sign is a shorthand for a generic data type. It infers the type from the context in which the expression is used.
+"    when <condition> then <result>: Defines a condition and its corresponding result. If the condition is true, the result is returned.
+"    else <default_result>: Specifies a default result to be returned if none of the preceding conditions are met.
+
             " check result[ lines( result ) ] is initial: Checks if the last line in the result table is empty.
     " delete result index lines( result ): If the last line is empty, it deletes it to ensure no empty line at the end of the generated lyrics."
